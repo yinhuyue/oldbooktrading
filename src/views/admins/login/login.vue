@@ -27,29 +27,19 @@
         }
     },
     methods: {
-        dologin() {
-            //
-            this.$axios.post('login', this.form)
-              .then((res) => {
-                console.log(res)
-                // 我们想要的服务器返回的数据
-                const data = res.data
-                // 判断登录是否成功
-                if(data.meta.status === 200) {
-                  // 登陆成功
-                  //1 跳转
-                  //2 提示
-                  //3 保存token登录状态
-                  sessionStorage.setItem('token', data.data.token)
-                  this.$message.success('登陆成功')
-                } else{
-                  // 登录失败 - 提示
-                  this.$message.error('登录失败')
-                }
-              })
-              .catch((err) => {
-                console.log(err)
-              })
+        async dologin() {
+          const res = await this.$axios.post('login', this.form)
+          const data = res.data
+          if (data.meta.status === 200) {
+            this.$message.success('登陆成功')
+            sessionStorage.setItem('token', data.data.token)
+            // 跳转
+            this.$router.push({
+              name: 'home'
+            })
+          } else {
+            this.$message.error('登陆失败')
+          }
         }
     },
   }
