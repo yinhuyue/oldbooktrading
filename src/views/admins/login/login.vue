@@ -1,12 +1,12 @@
 <template>
   <div class="login">
-    <el-form class="login-form" label-position="top" ref="form" :model="form" label-width="80px">
-      <h2>用户登录</h2>
-      <el-form-item label="用户名">
-        <el-input v-model="form.adminname"></el-input>
+    <el-form class="login-form" label-position="top" :rules="rules" ref="form" :model="form" label-width="80px">
+      <h2>管理员登录</h2>
+      <el-form-item label="账号" prop="admin_account">
+        <el-input v-model="form.admin_account"></el-input>
       </el-form-item>
-      <el-form-item label="密码">
-        <el-input @keyup.enter.native='dologin' type="password" v-model="form.password"></el-input>
+      <el-form-item label="密码" prop="admin_password">
+        <el-input @keyup.enter.native='dologin' type="password" v-model="form.admin_password"></el-input>
       </el-form-item>
       <el-form-item>
         <el-button class="login-btn" @click="dologin" type="primary">登录</el-button>
@@ -19,48 +19,83 @@
   export default {
     name: 'login',
     data() {
-        return {
-            form: {
-                adminname: '',
-                password: ''
+      return {
+        form: {
+          admin_account: '',
+          admin_password: ''
+        },
+        rules: {
+          admin_account: [{
+              required: true,
+              message: '请输入账号',
+              trigger: 'blur'
+            },
+            {
+              min: 3,
+              max: 8,
+              message: '长度在 3 到 8 个字符',
+              trigger: 'blur'
             }
+          ],
+          admin_password: [{
+              required: true,
+              message: '请输入密码',
+              trigger: 'blur'
+            },
+            {
+              min: 6,
+              max: 11,
+              message: '长度在 6 到 11 个字符',
+              trigger: 'blur'
+            }
+          ]
         }
+      }
     },
     methods: {
-        async dologin() {
-          const res = await this.$axios.post('login', this.form)
-          const data = res.data
-          if (data.meta.status === 200) {
-            this.$message.success('登陆成功')
-            sessionStorage.setItem('token', data.data.token)
-            // 跳转
-            this.$router.push({
-              name: 'home'
-            })
+      async dologin() {
+        this.$refs.form.validate(async (valid) => {
+          if (!valid) {
+            return;
           } else {
-            this.$message.error('登陆失败')
+            const res = await this.$axios.post('/login', this.form)
+            if (res.data.status === 200) {
+              console.log(res)
+              this.$message.success('登陆成功')
+              sessionStorage.setItem('token', res.data.data)
+              // 跳转
+              this.$router.push({
+                name: 'home'
+              })
+            } else {
+              this.$message.error('登陆失败')
+            }
           }
-        }
-    },
+        })
+      }
+    }
   }
 
 </script>
 
 <style scoped>
-.login {
+  .login {
     background-color: #324152;
     height: 100%;
     display: flex;
     justify-content: center;
     align-items: center;
-}
-.login .login-form {
+  }
+
+  .login .login-form {
     background-color: #fff;
     width: 400px;
     padding: 30px;
     border-radius: 5px;
-}
-.login-btn {
+  }
+
+  .login-btn {
     width: 100%;
-}
+  }
+
 </style>
