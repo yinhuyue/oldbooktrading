@@ -1,7 +1,7 @@
 <template>
   <div>
     <el-breadcrumb separator="/">
-      <el-breadcrumb-item :to="{ path: '/mybooklist' }">出售书籍信息列表</el-breadcrumb-item>
+      <el-breadcrumb-item><a @click="goBack">返回上一页</a></el-breadcrumb-item>
       <el-breadcrumb-item>出售书籍信息详情</el-breadcrumb-item>
     </el-breadcrumb>
     <div class="content">
@@ -29,8 +29,9 @@
           </el-col>
           <el-col :span="8">
             <el-form-item class="content-infor" label="书籍封面:">
-              <img class="book-pic" src="../../../assets/img/1.jpg">
-              <!-- <img :src="tableData.book_pic"> -->
+              <!-- <img class="book-pic" src="../../../assets/img/1.jpg"> -->
+              <img class="book-pic" :src="tableData.book_pic">
+              <!-- <img :src="this.imageUrl"> -->
               <!-- {{tableData.book_pic}} -->
             </el-form-item>
           </el-col>
@@ -223,7 +224,8 @@
           name: '1.png',
           url: 'http://127.0.0.1:8/oldbooktrading/public/index.php/public/uploads/1.png'
         }],
-        book_id: ''
+        book_id: '',
+        imageUrl: ''
       }
     },
     mounted() {
@@ -246,6 +248,8 @@
         this.loading = false
         if (res.data.status === 200) {
           this.tableData = res.data.data
+          // const baseUrl = 'http://127.0.0.1:8/oldbooktrading/public/index.php/'
+          // this.imageUrl = baseUrl + tableData.book_pic
         } else {
           this.$message.error('获取出售书籍信息详情失败')
         }
@@ -308,6 +312,9 @@
         console.log(response)
         console.log(file)
         console.log(fileList)
+      },
+      goBack() {
+        window.history.back()
       }
     }
   }

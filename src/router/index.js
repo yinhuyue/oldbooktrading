@@ -41,6 +41,8 @@ import MySellBook from '@/views/users/user/mysellbook'
 import MyBookList from '@/views/users/user/mybooklist'
 // 导入userinfor组件
 import MyBookDetail from '@/views/users/user/mybookdetail'
+// 导入myshop组件
+import MyShop from '@/views/users/user/myshop'
 // 导入mycomment组件
 import MyComment from '@/views/users/user/mycomment'
 
@@ -51,7 +53,20 @@ export default new Router({
   routes: [{
       path: '/',
       name: 'userlogin',
-      component: UserLogin
+      component: UserLogin,
+      children: [
+        // 子路由
+        {
+          path: '/list',
+          name: 'list',
+          component: List
+        },
+        {
+          path: '/booklist/:id',
+          name: 'booklist',
+          component: BookList
+        },
+      ]
     },
     {
       path: '/userindex',
@@ -101,6 +116,11 @@ export default new Router({
           path: '/mybookdetail/:id',
           name: 'mybookdetail',
           component: MyBookDetail
+        },
+        {
+          path: '/myshop',
+          name: 'myshop',
+          component: MyShop
         },
         {
           path: '/mycomment',

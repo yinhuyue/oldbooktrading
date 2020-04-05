@@ -1,7 +1,7 @@
 <template>
   <div>
-    <el-breadcrumb separator="">
-      <el-breadcrumb-item :to="{ path: '/list' }">首页</el-breadcrumb-item>
+    <el-breadcrumb separator="/" style="padding-top: 8px; margin-bottom: 15px;">
+      <el-breadcrumb-item :to="{ path: '/list' }">总书籍列表</el-breadcrumb-item>
       <el-breadcrumb-item></el-breadcrumb-item>
     </el-breadcrumb>
     <div style="margin-top: 10px;">
@@ -12,8 +12,8 @@
     </div>
     <div class="book-list" style="margin-top: 10px;">
       <ul>
-        <li v-for="(item) in bookListMessageForm.slice((current_page-1)*per_page,current_page*per_page)"
-          :key="item.book_id">
+        <li v-for="(item,index) in bookListMessageForm.slice((current_page-1)*per_page,current_page*per_page)"
+          :key="index">
           <div class="book-img" @click="doBookDetail(item.book_id)">
             <img src="../../../assets/img/1.jpg">
           </div>
@@ -34,7 +34,8 @@
             <div class="msg4">
               <span class="price">现价：55元</span>
               <span class="price">原价：102元</span>
-              <button>添加购物车</button>
+              <button @click="addShop(item.book_id)" v-show="addShopButton">添加购物车</button>
+              <button @click="deleteShop(item.book_id)" v-show="deleteShopButton">移除购物车</button>
             </div>
           </div>
         </li>
@@ -66,6 +67,8 @@
         bookListMessageForm: [],
         // 控制加载提示的现实与隐藏
         loading: true,
+        addShopButton: false,
+        deleteShopButton: false
       }
     },
     created() {
@@ -82,6 +85,8 @@
         const res = await this.$axios.get('/userbooklist', {
           params
         })
+        const userID = sessionStorage.getItem('data')
+        const res3 = await this.$axios.post(`/getshop?user_id=${userID}&book_id=${this.book_id}`)
         this.loading = false
         if (res.data.status === 200) {
           // 表格数据
@@ -91,13 +96,57 @@
         } else {
           this.$message.error('获取数据失败')
         }
+        if (res3.data.status === 200) {
+          this.addShopButton = false
+          this.deleteShopButton = true
+        } else {
+          // this.$message.error('获取购物车数据失败')
+          this.addShopButton = true
+        }
       },
       doBookDetail(book_id) {
-          this.$router.push({
-            name: 'detail',
-            params: {
-              id: book_id
-            }
+        this.$router.push({
+          name: 'detail',
+          params: {
+            id: book_id
+          }
+        })
+      },
+      async addShop(book_id) {
+        const userID = sessionStorage.getItem('data')
+        const res = await this.$axios.post(`/addshop?user_id=${userID}&book_id=${book_id}`)
+        if (res.data.status === 200) {
+          this.$message({
+            type: 'success',
+            message: res.data.msg
+          })
+          this.addShopButton = false
+          this.deleteShopButton = true
+        } else {
+          this.$message({
+            type: 'error',
+            message: res.data.msg
+          })
+        }
+      },
+      async deleteShop(book_id) {
+        this.$confirm('是否确定将此书籍移除购物车', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(async () => {
+          // 删除操作
+          const userID = sessionStorage.getItem('data')
+          const res = await this.$axios.delete(`/deleteshop?user_id=${userID}&book_id=${book_id}`)
+          if (res.data.status === 200) {
+            // 删除成功
+            this.$message.success(res.data.msg)
+            this.addShopButton = true
+            this.deleteShopButton = false
+          } else {
+            // 删除失败
+            this.$message.error(res.data.msg)
+          }
         })
       },
       async doSearch() {

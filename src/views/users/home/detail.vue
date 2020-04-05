@@ -280,11 +280,11 @@
         }
       },
       async deleteShop(bookDetailMessage) {
-        // this.$confirm('是否确定将此书籍移除购物车', '提示', {
-        //   confirmButtonText: '确定',
-        //   cancelButtonText: '取消',
-        //   type: 'warning'
-        // }).then(async () => {
+        this.$confirm('是否确定将此书籍移除购物车', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(async () => {
         // 删除操作
         const bookID = this.bookDetailMessage.book_id
         const userID = sessionStorage.getItem('data')
@@ -292,8 +292,8 @@
         if (res.data.status === 200) {
           // 删除成功
           this.$message.success(res.data.msg)
-          this.addShopForm.book_state = 0
-          console.log(this.addShopForm.book_state)
+          // this.addShopForm.book_state = 0
+          // console.log(this.addShopForm.book_state)
           this.addShopButton = true
           this.deleteShopButton = false
           // 重新加载数据
@@ -302,7 +302,7 @@
           // 删除失败
           this.$message.error(res.data.msg)
         }
-        // })
+        })
       },
       showAddCommentDialogVisible(bookDetailMessage) {
         this.addCommentDialogVisible = true

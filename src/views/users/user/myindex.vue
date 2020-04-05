@@ -45,7 +45,7 @@
             <i class="el-icon-user"></i>
             <span slot="title">出售书籍信息</span>
           </el-menu-item>
-          <el-menu-item class="item" index="/usersellbook">
+          <el-menu-item class="item" index="/myshop">
             <i class="el-icon-user"></i>
             <span slot="title">我的购物车</span>
           </el-menu-item>

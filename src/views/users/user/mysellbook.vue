@@ -20,14 +20,12 @@
           </el-col>
           <el-col :span="9">
             <el-form-item class="item-book-pic" label="书籍封面">
-              <!-- action 
-              1.必须是全部路径
-              2.必须设置token -->
               <el-upload
+                class="upload-demo"
                 action="http://127.0.0.1:8/oldbooktrading/public/index.php/uploadpic"
+                :on-preview="handlePreview"
                 :on-remove="handleRemove"
                 :on-success="handleSuccess"
-                :headers="{'Content-Type':'multipart/form-data'}"
                 :file-list="fileList"
                 list-type="picture">
                 <el-button size="small" type="primary">点击上传</el-button>
@@ -110,6 +108,18 @@
           <el-button>重置</el-button>
         </el-form-item>
       </el-form>
+<!-- <el-upload
+  class="avatar-uploader"
+  action="upload"
+  :headers="{'Content-Type':'multipart/form-data'}"
+  :show-file-list="false"
+  :auto-upload = "true"
+  :http-request="uploadFile"
+  :on-success="handleSuccess"
+  :before-upload="beforeAvatarUpload">
+  <img v-if="imageUrl" :src="imageUrl" class="avatar">
+  <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+</el-upload> -->
     </div>
   </div>
 </template>
@@ -134,11 +144,6 @@ import axios from 'axios'
           book_pages: '',
           book_weight: '',
           book_introduce: ''
-        },
-        book_pic_name: '',
-        // 上传文件的时候，设置请求头中的token
-        tokenHeader: {
-          token: sessionStorage.getItem('token')
         },
         majoroptions: [],
         subjectoptions: [],
@@ -206,28 +211,28 @@ import axios from 'axios'
             trigger: 'change'
           }],
         },
+        imageUrl: '',
         fileList: []
       }
     },
-    // // 判断是否登录
-    // beforeCreate() {
-    //   // 判断sessionStorage中是否有token，如果没有则认为没有登陆
-    //   const token = sessionStorage.getItem('token')
+    // 判断是否登录
+    beforeCreate() {
+      // 判断sessionStorage中是否有token，如果没有则认为没有登陆
+      const token = sessionStorage.getItem('token')
       
-    //   if (!token) {
-    //     // 跳转回登录页面并且要提示
-    //     this.$router.push({
-    //       name: 'userlogin'
-    //     })
-    //     this.$message.info('请先登录')
-    //   }
-    // },
+      if (!token) {
+        // 跳转回登录页面并且要提示
+        this.$router.push({
+          name: 'userlogin'
+        })
+        this.$message.info('请先登录')
+      }
+    },
     mounted() {
       this.loadData()
     },
     methods: {
       async loadData() {
-        console.log(this.tokenHeader)
         const res = await this.$axios.get('/bookmajorsort')
         if (res.data.status === 200) {
           this.majoroptions = res.data.data.data
@@ -257,7 +262,8 @@ import axios from 'axios'
           if (!valid) {
             return
           } else {
-            const res = await this.$axios.post('/mybookupload', this.bookForm)
+            const userID = sessionStorage.getItem('data')
+            const res = await this.$axios.post(`/mybookupload?user_id=${userID}`, this.bookForm)
             if (res.data.status === 200) {
               this.$message.success('售卖书籍成功')
               this.$router.push({
@@ -274,19 +280,52 @@ import axios from 'axios'
         
       },
       // 图片上传事件
+      // 图片上传成功
+      handleSuccess(response, file ,fileList){
+        // console.log(response)
+        // console.log(file)
+        // console.log(fileList)
+        console.log(response.data)
+        this.bookForm.book_pic = response.data
+      },
       // 图片的移除
       handleRemove(file, fileList) {
         // file.response服务器返回的响应
         // file.response.data.tmp_path
-        console.log(file)
-        console.log(fileList)
+        // console.log(file)
+        // console.log(fileList)
       },
-      // 图片上传成功
-      handleSuccess(response, file ,fileList){
-        console.log(response)
-        console.log(file)
-        console.log(fileList)
-      }
+      // 图片预览
+      handlePreview(file) {
+        // console.log(file)
+      },
+      // beforeAvatarUpload(file) {//文件上传之前调用做一些拦截限制
+      //   console.log(file);
+      //   const isJPG = true;
+      //   // const isJPG = file.type === 'image/jpeg';
+      //   const isLt2M = file.size / 1024 / 1024 < 2;
+      //   // if (!isJPG) {
+      //   //   this.$message.error('上传头像图片只能是 JPG 格式!');
+      //   // }
+      //   if (!isLt2M) {
+      //     this.$message.error('上传图片大小不能超过 2MB!');
+      //   }
+      //   return isJPG && isLt2M;
+      // },
+      // handleSuccess(res, file) {//图片上传成功
+      //   console.log(res);
+      //   console.log(file);
+      //   this.imageUrl = URL.createObjectURL(file.raw);
+      // },
+      // handleExceed(files, fileList) {//图片上传超过数量限制
+      //   this.$message.error('上传图片不能超过6张!');
+      //   console.log(file, fileList);
+      // },
+      // imgUploadError(err, file, fileList){//图片上传失败调用
+      //   console.log(err)
+      //   this.$message.error('上传图片失败!');
+      // },
+      
 
     }
   }
