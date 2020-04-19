@@ -21,29 +21,47 @@ import Comment from '@/views/admins/comment/comment'
 import Activity from '@/views/admins/activity/activity'
 
 
-// 导入userlogin组件
+// 登录注册组件
 import UserLogin from '@/views/users/login/userlogin'
-// 导入userindex组件
-import UserIndex from '@/views/users/userindex'
-// 导入list组件
-import List from '@/views/users/home/list'
-// 导入sellbook组件
-import BookList from '@/views/users/home/booklist'
-// 导入detail组件
-import Detail from '@/views/users/home/detail'
-// 导入userinforindex组件
+
+//未登录时总书籍列表
+import UserLoginBookList from '@/views/users/login/userloginbooklist'
+//未登录时专业分类书籍列表
+import UserLoginMajorSortList from '@/views/users/login/userloginmajorsortlist'
+//未登录时学科分类书籍列表
+import UserLoginSubjectSortList from '@/views/users/login/userloginsubjectsortlist'
+//未登录时课程分类书籍列表
+import UserLoginCourseSortList from '@/views/users/login/userlogincoursesortlist'
+
+// 登录后首页
+import UserIndex from '@/views/users/home/userindex'
+// 登录后总书籍列表
+import UserBookList from '@/views/users/home/userbooklist'
+// 登陆后专业书籍列表
+import UserMajorSortList from '@/views/users/home/usermajorsortlist'
+//登录后学科分类书籍列表
+import UserSubjectSortList from '@/views/users/home/usersubjectsortlist'
+//登录后课程分类书籍列表
+import UserCourseSortList from '@/views/users/home/usercoursesortlist'
+// 登陆后书籍详情页
+import UserBookDetail from '@/views/users/home/userbookdetail'
+
+
+// 个人中心组件
 import MyIndex from '@/views/users/user/myindex'
-// 导入myinfor组件
+// 用户信息组件
 import MyInfor from '@/views/users/user/myinfor'
-// 导入mysellbook组件
+// 出售书籍组件
 import MySellBook from '@/views/users/user/mysellbook'
-// 导入mybooklist组件
+// 出售书籍列表组件
 import MyBookList from '@/views/users/user/mybooklist'
-// 导入userinfor组件
+// 出售书籍详情组件
 import MyBookDetail from '@/views/users/user/mybookdetail'
-// 导入myshop组件
+// 我的购物车组件
 import MyShop from '@/views/users/user/myshop'
-// 导入mycomment组件
+// 购物车中书籍详情组件
+import MyShopDetail from '@/views/users/user/myshopdetail'
+// 我的评论组件
 import MyComment from '@/views/users/user/mycomment'
 
 // 注册Vue-Router的插件
@@ -51,20 +69,30 @@ Vue.use(Router)
 
 export default new Router({
   routes: [{
-      path: '/',
+      path: '/userlogin',
       name: 'userlogin',
       component: UserLogin,
       children: [
         // 子路由
         {
-          path: '/list',
-          name: 'list',
-          component: List
+          path: '/userloginbooklist',
+          name: 'userloginbooklist',
+          component: UserLoginBookList
         },
         {
-          path: '/booklist/:id',
-          name: 'booklist',
-          component: BookList
+          path: '/userloginmajorsortlist/:majorsort_id',
+          name: 'userloginmajorsortlist',
+          component: UserLoginMajorSortList
+        },
+        {
+          path: '/userloginsubjectsortlist/:subjectsort_id',
+          name: 'userloginsubjectsortlist',
+          component: UserLoginSubjectSortList
+        },
+        {
+          path: '/userlogincoursesortlist/:coursesort_id',
+          name: 'userlogincoursesortlist',
+          component: UserLoginCourseSortList
         },
       ]
     },
@@ -75,19 +103,29 @@ export default new Router({
       children: [
         // 子路由
         {
-          path: '/list',
-          name: 'list',
-          component: List
+          path: '/userbooklist',
+          name: 'userbooklist',
+          component: UserBookList
         },
         {
-          path: '/booklist/:id',
-          name: 'booklist',
-          component: BookList
+          path: '/usermajorsortlist/:majorsort_id',
+          name: 'usermajorsortlist',
+          component: UserMajorSortList
         },
         {
-          path: '/detail/:id',
-          name: 'detail',
-          component: Detail
+          path: '/usersubjectsortlist/:subjectsort_id',
+          name: 'usersubjectsortlist',
+          component: UserSubjectSortList
+        },
+        {
+          path: '/usercoursesortlist/:coursesort_id',
+          name: 'usercoursesortlist',
+          component: UserCourseSortList
+        },
+        {
+          path: '/userbookdetail/:id',
+          name: 'userbookdetail',
+          component: UserBookDetail
         },
       ]
     },
@@ -121,6 +159,11 @@ export default new Router({
           path: '/myshop',
           name: 'myshop',
           component: MyShop
+        },
+        {
+          path: '/myshopdetail/:id',
+          name: 'myshopdetail',
+          component: MyShopDetail
         },
         {
           path: '/mycomment',

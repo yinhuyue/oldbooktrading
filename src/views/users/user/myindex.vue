@@ -13,7 +13,7 @@
         </el-col>
         <el-col :span="2" class="header-title2">
           <div class="grid-content bg-purple">
-            <i class="el-icon-user-solid"></i>
+            <i class="el-icon-s-home"></i>
             <span slot="title" @click="bookWeb">网站首页</span>
           </div>
         </el-col>
@@ -38,23 +38,23 @@
             <span slot="title">用户基本信息</span>
           </el-menu-item>
           <el-menu-item class="item" index="/mysellbook">
-            <i class="el-icon-user"></i>
+            <i class="el-icon-edit"></i>
             <span slot="title">出售书籍</span>
           </el-menu-item>
           <el-menu-item class="item" index="/mybooklist">
-            <i class="el-icon-user"></i>
+            <i class="el-icon-reading"></i>
             <span slot="title">出售书籍信息</span>
           </el-menu-item>
           <el-menu-item class="item" index="/myshop">
-            <i class="el-icon-user"></i>
+            <i class="el-icon-star-off"></i>
             <span slot="title">我的购物车</span>
           </el-menu-item>
           <el-menu-item class="item" index="/usersellbook">
-            <i class="el-icon-user"></i>
+            <i class="el-icon-goods"></i>
             <span slot="title">购买书籍信息</span>
           </el-menu-item>
           <el-menu-item class="item" index="/mycomment">
-            <i class="el-icon-user"></i>
+            <i class="el-icon-document"></i>
             <span slot="title">我的评论</span>
           </el-menu-item>
         </el-menu>
@@ -83,7 +83,7 @@
     methods: {
       bookWeb() {
         this.$router.push({
-          name: 'list'
+          name: 'userbooklist'
         })
       },
       logout() {

@@ -111,7 +111,7 @@
           per_page: this.per_page,
           query: this.searchValue
         }
-        const res = await this.$axios.get('/search', {params})
+        const res = await this.$axios.get('/usersearch', {params})
         // const res = await this.$axios.get('/search', this.searchValue)
         if (res.data.status === 200) {
           // 表格数据
@@ -139,7 +139,7 @@
       },
       // 用户状态改变  监听swich开关状态的改变
       async userStateChange(id, val) {
-        const res = await this.$axios.put(`/ban?user_id=${id}&user_state=${val}`)
+        const res = await this.$axios.put(`/userban?user_id=${id}&user_state=${val}`)
         if(res.data.status === 200) {
           this.$message({
             type: 'success',

@@ -12,9 +12,6 @@
         <el-form-item class="content-infor" label="用户账号:">
           {{userInforForm.user_account}}
         </el-form-item>
-        <!-- <el-form-item class="content-infor" label="用户密码:">
-          {{userInforForm.user_password}}
-        </el-form-item> -->
         <el-form-item class="content-infor" label="用户地址:">
           {{userInforForm.user_address}}
         </el-form-item>
@@ -242,7 +239,6 @@
         if (res.data.status === 200) {
           // 表格数据
           this.userInforForm = res.data.data
-          console.log(res)
         } else {
           this.$message.error('获取数据失败')
         }
@@ -254,7 +250,6 @@
         if (res.data.status === 200) {
           // 表格数据
           this.updateUserInforFormData = res.data.data
-          //   console.log(res)
         } else {
           this.$message.error('获取数据失败')
         }

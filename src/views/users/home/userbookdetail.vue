@@ -1,10 +1,11 @@
 <template>
   <div>
     <el-breadcrumb separator="/">
-      <el-breadcrumb-item :to="{ path: '/list' }">首页</el-breadcrumb-item>
-      <el-breadcrumb-item :to="{ name: 'booklist', params: {id: this.bookDetailMessage.coursesort_id}}">书籍分类列表
-      </el-breadcrumb-item>
-      <el-breadcrumb-item>书籍详情</el-breadcrumb-item>
+      <!-- <el-breadcrumb-item :to="{ path: '/userbooklist' }">总书籍列表</el-breadcrumb-item>
+      <el-breadcrumb-item :to="{ name: 'usercoursesortlist', params: {coursesort_id: this.bookDetailMessage.coursesort_id}}">书籍分类列表
+      </el-breadcrumb-item> -->
+      <el-breadcrumb-item><a @click="goBack">返回上一页</a></el-breadcrumb-item>
+      <el-breadcrumb-item>{{bookDetailMessage.book_name}}书籍详情</el-breadcrumb-item>
     </el-breadcrumb>
     <div style="margin-top: 15px;">
       <el-form ref="bookDetailRef" v-model="bookDetailMessage" label-width="100px">
@@ -15,24 +16,20 @@
                 {{bookDetailMessage.book_name}}
               </div>
               <div class="book-img">
-                <img src="../../../assets/img/1.jpg">
-              </div>
-              <div class="detail-btn">
-                <el-button type="primary" style="width: 120px">购买书籍</el-button>
-              </div>
-              <div class="detail-btn">
-                <el-button type="primary" style="width: 120px" @click="showAddCommentDialogVisible(bookDetailMessage)">
-                  发布评论</el-button>
+                <img class="book-pic" :src="bookDetailMessage.book_pic">
               </div>
               <div class="detail-btn">
                 <el-button type="primary" style="width: 120px" @click="addShop(bookDetailMessage)"
                   v-show="addShopButton">添加购物车</el-button>
                 <el-button type="primary" style="width: 120px; margin-right: 10px" @click="deleteShop(bookDetailMessage)"
                   v-show="deleteShopButton">移除购物车</el-button>
-                <!-- <el-tag type="success" effect="plain" key="addShopForm.shop_state" @click="deleteShop(bookDetailMessage)"
-                  v-if="addShopForm.shop_state==1" disable-transitions>移除购物车</el-tag>
-                <el-tag type="success" effect="dark" key="addShopForm.shop_state" @click="addShop(bookDetailMessage)"
-                  v-if="addShopForm.shop_state==0" disable-transitions>添加购物车</el-tag> -->
+              </div>
+              <div class="detail-btn">
+                <el-button type="primary" style="width: 120px" @click="showAddCommentDialogVisible(bookDetailMessage)">
+                  发布评论</el-button>
+              </div>
+              <div class="detail-btn">
+                <el-button type="primary" style="width: 120px">购买书籍</el-button>
               </div>
             </div>
           </el-col>
@@ -84,11 +81,6 @@
           <el-col :span="16">
             <div class="detail-msg-intro">
               简介：{{bookDetailMessage.book_introduce}}
-              <!-- <el-collapse v-model="bookDetailMessage.book_introduce">
-                <el-collapse-item title="简介" name="1">
-                  <div>{{bookDetailMessage.book_introduce}}</div>
-                </el-collapse-item>
-              </el-collapse> -->
             </div>
           </el-col>
         </el-row>
@@ -121,13 +113,13 @@
         border stripe>
         <el-table-column type="index" width="50">
         </el-table-column>
-        <el-table-column property="book_name" label="评论书籍" width="120">
+        <el-table-column property="book_name" label="评论书籍" width="140">
         </el-table-column>
-        <el-table-column :show-overflow-tooltip="true" property="comment_content" label="评论内容" width="450">
+        <el-table-column :show-overflow-tooltip="true" property="comment_content" label="评论内容" width="470">
         </el-table-column>
-        <el-table-column property="user_name" label="评论人" width="145">
+        <el-table-column property="user_name" label="评论人" width="155">
         </el-table-column>
-        <el-table-column property="comment_createtime" label="评论时间" width="180">
+        <el-table-column property="comment_createtime" label="评论时间" width="200">
         </el-table-column>
       </el-table>
     </div>
@@ -203,6 +195,18 @@
         deleteShopButton: false
       }
     },
+    // 判断是否登录
+    beforeCreate() {
+      // 判断sessionStorage中是否有token，如果没有则认为没有登陆
+      const token = sessionStorage.getItem('token')
+      if (!token) {
+        // 跳转回登录页面并且要提示
+        this.$router.push({
+          name: 'userlogin'
+        })
+        this.$message.info('请先登录')
+      }
+    },
     mounted() {
       this.getId()
       this.loadData()
@@ -233,7 +237,7 @@
         } else {
           this.$message.error(res.data.msg)
           this.$router.push({
-            path: '/list',
+            path: '/userbooklist',
             // params: {
             //   id: this.book_id
             // }
@@ -291,7 +295,7 @@
         const res = await this.$axios.delete(`/deleteshop?user_id=${userID}&book_id=${bookID}`)
         if (res.data.status === 200) {
           // 删除成功
-          this.$message.success(res.data.msg)
+          this.$message.warning(res.data.msg)
           // this.addShopForm.book_state = 0
           // console.log(this.addShopForm.book_state)
           this.addShopButton = true
@@ -341,13 +345,8 @@
           }
         })
       },
-      goBack(coursesort_id) {
-        this.$router.push({
-          name: 'booklist',
-          params: {
-            id: coursesort_id
-          }
-        })
+      goBack() {
+        window.history.back()
       },
       // 分页功能  监听pagesize改变的事件
       handleSizeChange(val) {
@@ -371,24 +370,28 @@
 
 <style scoped>
   .detail-msg1 {
-    /* width: 180px; */
     text-align: center;
     font-size: 24px;
     font-weight: bold;
     margin-top: 10px;
-    /* margin-left: 15px; */
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    /* （希望显示N行-webkit-line-clamp的变为N） */
+    -webkit-line-clamp: 1;
+    -webkit-box-orient: vertical;
   }
 
   .book-img {
     display: block;
-    width: 100%;
+    width: 90%;
     margin-top: 10px;
+    padding-left: 20px;
   }
 
   .book-img img {
     width: 100%;
-    height: 220px;
-
+    height: 250px;
   }
 
   .detail-btn {
@@ -414,7 +417,6 @@
   }
 
   .detail-msg-intro {
-    /* height: 115px; */
     font-size: 14px;
     margin-top: 25px;
     margin-left: 30px;
@@ -430,8 +432,6 @@
     width: 100%;
     font-size: 18px;
     border: 1px solid #000;
-    /* margin-left: 30px; */
-
   }
 
   .comment-list-title {
@@ -464,11 +464,9 @@
   }
 
   .comment-list-time {
-    /* margin-bottom: 25px; */
     margin-top: 10px;
     padding-bottom: 10px;
     padding-left: 15px;
-    /* border-bottom: 1px solid #000; */
   }
 
 </style>

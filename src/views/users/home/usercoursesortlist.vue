@@ -1,8 +1,8 @@
 <template>
   <div>
     <el-breadcrumb separator="/" style="padding-top: 8px; margin-bottom: 15px;">
-      <el-breadcrumb-item :to="{ path: '/list' }">总书籍列表</el-breadcrumb-item>
-      <el-breadcrumb-item></el-breadcrumb-item>
+      <el-breadcrumb-item :to="{ path: '/userbooklist' }">总书籍列表</el-breadcrumb-item>
+      <el-breadcrumb-item>{{sortName.coursesort_name}}书籍列表</el-breadcrumb-item>
     </el-breadcrumb>
     <div style="margin-top: 10px;">
       <el-input @keyup.enter.native='doSearch' v-model="searchInput" placeholder="请输入书籍名称" class="searchInput"
@@ -13,9 +13,9 @@
     <div class="book-list" style="margin-top: 10px;">
       <ul>
         <li v-for="(item,index) in bookListMessageForm.slice((current_page-1)*per_page,current_page*per_page)"
-          :key="index">
-          <div class="book-img" @click="doBookDetail(item.book_id)">
-            <img src="../../../assets/img/1.jpg">
+          :key="index" @click="doDetail(item.book_id)">
+          <div class="book-img">
+            <img class="book-pic" :src="item.book_pic">
           </div>
           <div class="book-msg">
             <div class="msg1">
@@ -23,19 +23,15 @@
             </div>
             <div class="msg2">
               <span class="msg2-span">作者：{{item.book_author}}</span>
+              <span class="msg2-span">原价：{{item.book_oldprice}} 元</span>
+              <span class="msg2-span">现价：{{item.book_newprice}} 元</span>
+            </div>
+            <div class="msg2">
               <span class="msg2-span">出版社：{{item.book_publish}}</span>
               <span class="msg2-span">出版时间：{{item.book_publishtime | fmtDate('YYYY-MM-DD')}}</span>
-              <span class="msg2-span">总页数：{{item.book_pages}}页</span>
-              <span class="msg2-span">总重量：{{item.book_weight}}克(g)</span>
             </div>
             <div class="msg3">
               <span class="intro">简介：{{item.book_introduce}}</span>
-            </div>
-            <div class="msg4">
-              <span class="price">现价：55元</span>
-              <span class="price">原价：102元</span>
-              <button @click="addShop(item.book_id)" v-show="addShopButton">添加购物车</button>
-              <button @click="deleteShop(item.book_id)" v-show="deleteShopButton">移除购物车</button>
             </div>
           </div>
         </li>
@@ -48,7 +44,6 @@
       </el-pagination>
     </div>
   </div>
-
 </template>
 
 <script>
@@ -60,21 +55,40 @@
         // 分页  当前页数
         current_page: 1,
         // 分页  当前每页显示几条数据
-        per_page: 5,
+        per_page: 1,
         //总页数
         total: 0,
         // 列表的数据
         bookListMessageForm: [],
         // 控制加载提示的现实与隐藏
         loading: true,
-        addShopButton: false,
-        deleteShopButton: false
+        coursesort_id: 0,
+        sortName: []
       }
     },
-    created() {
+    // 判断是否登录
+    beforeCreate() {
+      // 判断sessionStorage中是否有token，如果没有则认为没有登陆
+      const token = sessionStorage.getItem('token')
+      if (!token) {
+        // 跳转回登录页面并且要提示
+        this.$router.push({
+          name: 'userlogin'
+        })
+        this.$message.info('请先登录')
+      }
+    },
+    mounted() {
+      this.getId()
       this.loadData()
     },
+    watch: {
+      '$route': ['getId', 'loadData']
+    },
     methods: {
+      getId() {
+        this.coursesort_id = this.$route.params.coursesort_id
+      },
       async loadData() {
         // 数据请求开始
         this.loading = true
@@ -82,70 +96,25 @@
           current_page: this.current_page,
           per_page: this.per_page
         }
-        const res = await this.$axios.get('/userbooklist', {
+        const res = await this.$axios.post(`/usercoursesortbooklist?id=${this.coursesort_id}`, {
           params
         })
-        const userID = sessionStorage.getItem('data')
-        const res3 = await this.$axios.post(`/getshop?user_id=${userID}&book_id=${this.book_id}`)
         this.loading = false
         if (res.data.status === 200) {
           // 表格数据
           this.bookListMessageForm = res.data.data.data
           // 总数据条数
           this.total = res.data.data.total
+          this.sortName = res.data.data.data[0]
         } else {
-          this.$message.error('获取数据失败')
-        }
-        if (res3.data.status === 200) {
-          this.addShopButton = false
-          this.deleteShopButton = true
-        } else {
-          // this.$message.error('获取购物车数据失败')
-          this.addShopButton = true
+          this.$message.error('获取出售书籍信息列表失败')
         }
       },
-      doBookDetail(book_id) {
+      doDetail(book_id) {
         this.$router.push({
-          name: 'detail',
+          name: 'userbookdetail',
           params: {
             id: book_id
-          }
-        })
-      },
-      async addShop(book_id) {
-        const userID = sessionStorage.getItem('data')
-        const res = await this.$axios.post(`/addshop?user_id=${userID}&book_id=${book_id}`)
-        if (res.data.status === 200) {
-          this.$message({
-            type: 'success',
-            message: res.data.msg
-          })
-          this.addShopButton = false
-          this.deleteShopButton = true
-        } else {
-          this.$message({
-            type: 'error',
-            message: res.data.msg
-          })
-        }
-      },
-      async deleteShop(book_id) {
-        this.$confirm('是否确定将此书籍移除购物车', '提示', {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
-          type: 'warning'
-        }).then(async () => {
-          // 删除操作
-          const userID = sessionStorage.getItem('data')
-          const res = await this.$axios.delete(`/deleteshop?user_id=${userID}&book_id=${book_id}`)
-          if (res.data.status === 200) {
-            // 删除成功
-            this.$message.success(res.data.msg)
-            this.addShopButton = true
-            this.deleteShopButton = false
-          } else {
-            // 删除失败
-            this.$message.error(res.data.msg)
           }
         })
       },
@@ -189,19 +158,14 @@
 
 <style scoped>
   .searchInput {
-    width: 350px;
-  }
-
-  .book-list ul {
-    padding: 0;
-    margin: 0;
-    list-style: none;
+    width: 450px;
   }
 
   .book-list>ul>li {
-    padding-bottom: 30px;
+    padding-bottom: 10px;
     border-bottom: 1px solid #000;
     margin-bottom: 10px;
+    cursor: pointer;
   }
 
   .book-img {
@@ -211,13 +175,12 @@
 
   .book-img>img {
     width: 120px;
-    height: 140px;
+    height: 150px;
   }
 
   .msg1 {
-    font-size: 18px;
+    font-size: 22px;
     font-weight: bold;
-    padding-top: 5px;
     margin-bottom: 5px;
   }
 
@@ -235,15 +198,12 @@
 
   .msg2-span {
     display: inline;
-    margin-right: 15px;
-  }
-
-  .msg3 {
-    font-size: 16px;
-    margin-bottom: 10px;
+    margin-right: 25px;
   }
 
   .intro {
+    font-size: 16px;
+    /* margin-bottom: 10px; */
     display: block;
     height: 60px;
     overflow: hidden;
@@ -252,18 +212,6 @@
     /* （希望显示N行-webkit-line-clamp的变为N） */
     -webkit-line-clamp: 3;
     -webkit-box-orient: vertical;
-  }
-
-  .msg4 {
-    font-size: 16px;
-    font-weight: bold;
-    float: right;
-    margin-right: 20px;
-  }
-
-  .price {
-    display: initial;
-    margin-right: 40px;
   }
 
   .book-page {

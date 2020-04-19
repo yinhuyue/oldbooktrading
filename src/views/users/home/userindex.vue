@@ -1,71 +1,63 @@
 <template>
   <div>
     <el-row type="flex" class="row-bg header">
-      <el-col :span="2" class="header-title">
-        <div class="grid-content bg-purple">
-        </div>
+      <el-col :span="2">
       </el-col>
       <el-col :span="6" class="header-title">
         <div class="grid-content bg-purple">
           您好，欢迎 <span class="header-title-name">{{userForm.user_name}}</span> 来到校园二手书交易网站！
         </div>
       </el-col>
-      <el-col :span="10">
-        <div class="grid-content bg-purple-light">
-        </div>
+      <el-col :span="11">
       </el-col>
-      <el-col :span="2" class="header-title2">
-        <div class="grid-content bg-purple">
-          <i class="el-icon-user-solid"></i>
+      <el-col :span="3" class="header-title2">
+        <div class="center">
+          <i class="el-icon-s-home"></i>
           <span slot="title" @click="userCenter">个人中心</span>
         </div>
-      </el-col>
-      <el-col :span="2" class="header-title3">
-        <div class="grid-content bg-purple" @click="logout">
+        <div class="logout" @click="logout">
           <i class="el-icon-error"></i>
           <span slot="title">退出</span>
         </div>
       </el-col>
-      <el-col :span="2" class="header-title">
-        <div class="grid-content bg-purple">
-        </div>
+      <el-col :span="2">
       </el-col>
     </el-row>
-    <!-- 头部组件 -->
-    <!-- <my-header></my-header> -->
-
     <el-row type="flex" class="row-bg shoulder">
-      <el-col :span="2" class="header-title">
-        <div class="grid-content bg-purple">
-        </div>
+      <el-col :span="2">
       </el-col>
-      <el-col :span="5" class="shoulder-img">
-        <div class="grid-content bg-purple">
-          <img class="logo" src="../../assets/img/1.jpg">
+      <el-col :span="20">
+        <div class="shoulder-img">
+          <img class="logo" src="../../../assets/img/1.jpg">
         </div>
-      </el-col>
-      <el-col :span="15" class="shoulder-activity">
-        <div class="shoulder-activity-h">
-          网站活动
-        </div>
-        <div class="grid-content bg-purple"
+        <div class="shoulder-activity"
           v-for="(item, index) in activityForm.slice((current_page-1)*per_page,current_page*per_page)" :key="index">
+          <div class="shoulder-activity-header">
+            网站活动
+          </div>
           <div class="shoulder-activity-title">
+            <span>活动名称：</span>
             {{item.activity_name}}
           </div>
-          <div class="shoulder-activity-content" :show-overflow-tooltip="true">
-            {{item.activity_content}}
+          <div class="shoulder-activity-content">
+            <div class="shoulder-activity-content-title">活动内容：</div>
+            <div class="shoulder-activity-content-content">
+              {{item.activity_content}}
+            </div>
           </div>
           <div class="shoulder-activity-time">
-            活动发起时间：{{item.activity_avtivitytime | fmtDate('YYYY-MM-DD') }}
+            <span>活动时间：</span>
+            {{item.activity_avtivitytime | fmtDate('YYYY-MM-DD') }}
           </div>
           <div class="shoulder-activity-effecttime">
-            有效时间：{{item.activity_effecttime}}
+            <span>有效时间：</span>
+            {{item.activity_effecttime}}
           </div>
         </div>
         <div>
-          <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange"
-            :current-page.sync="current_page" :page-size="per_page" layout="total, prev, pager, next" :total="total">
+          <el-pagination style="margin-left: 20px;" @size-change="handleSizeChange"
+            @current-change="handleCurrentChange" :current-page.sync="current_page" :page-size="per_page"
+            layout="total, prev, pager, next" :total="total">
           </el-pagination>
         </div>
       </el-col>
@@ -74,79 +66,58 @@
         </div>
       </el-col>
     </el-row>
-
-    <el-row type="flex" class="row-bg content">
+    <el-row type="flex" class="row-bg">
       <el-col :span="2">
-        <div class="grid-content bg-purple">
-        </div>
       </el-col>
       <el-col :span="20">
         <div class="grid-content bg-purple-light">
-          <!-- <el-container class="content-container"> -->
-          <el-col>
-            <div class="sontent-sort">
-              <div class="content-sort-title">
-                <p>
-                  <span>图书分类</span>
-                </p>
-              </div>
-              <div @mouseout="closeAll" class="content-sort-tab">
-                <ul>
-                  <li @mouseover="openCon(item.majorsort_id,index)" v-for="(item,index) in majorSortForm"
-                    :key="item.majorsort_id" :class="{active:num==index}" @click="doMajorList(item.majorsort_id)">
-                    <span>{{item.majorsort_name}}</span>
-                  </li>
-                </ul>
-              </div>
-              <div @mouseover="open2" @mouseleave="closeCon" class="content-sort-content" v-show="sortCon">
-                <ul>
-                  <li @mouseover="openCon2(item2.subjectsort_id,index2)" :class="{active:num2==index2}"
-                    v-for='(item2,index2) in subjectSortForm' :key="item2.subjectsort_id"
-                    @click="doSubjectList(item2.majorsort_id,item2.subjectsort_id)">
-                    <span>{{item2.subjectsort_name}}</span>
-                  </li>
-                </ul>
-              </div>
-              <div @mouseover="open3" @mouseleave="closeCon2" class="content-sort-content2" v-show="sortCon2">
-                <ul>
-                  <li v-for='(item3,index3) in courseSortForm' :key="item3.coursesort_id" @mouseover="openAll(index3)"
-                    :class="{active:num3==index3}" @click="doCourseList(item3.coursesort_id)">
-                    <span>{{item3.coursesort_name}}</span>
-                  </li>
-                </ul>
-              </div>
+          <div class="content-sort">
+            <div class="content-sort-title">
+              <span>图书分类</span>
             </div>
-          </el-col>
-          <el-col :span="18">
-            <div class="grid-content bg-purple content-main">
-              <!-- <el-main class="content-main"> -->
-              <router-view></router-view>
-              <!-- </el-main> -->
+            <div class="content-majorsort" @mouseout="closeAllSort">
+              <ul>
+                <li @mouseover="openSubjectSort(item.majorsort_id,index)" v-for="(item,index) in majorSortForm"
+                  :key="item.majorsort_id" :class="{active:num==index}" @click="doMajorList(item.majorsort_id,index)">
+                  <span>{{item.majorsort_name}}</span>
+                </li>
+              </ul>
             </div>
-          </el-col>
-          <!-- </el-container> -->
+            <div class="content-subject" @mouseleave="closeSubjectSort" v-show="sortSubject">
+              <ul>
+                <li @mouseover="openCourseSort(item2.subjectsort_id,index2)" :class="{active:num2==index2}"
+                  v-for='(item2,index2) in subjectSortForm' :key="item2.subjectsort_id"
+                  @click="doSubjectList(item2.subjectsort_id)">
+                  <span>{{item2.subjectsort_name}}</span>
+                </li>
+              </ul>
+            </div>
+            <div @mouseover="openCourse" @mouseleave="closeCourseSort" class="content-course" v-show="sortCourse">
+              <ul>
+                <li @mouseover="openAll(index3)" v-for='(item3,index3) in courseSortForm' :key="item3.coursesort_id"
+                  :class="{active:num3==index3}" @click="doCourseList(item3.coursesort_id)">
+                  <span>{{item3.coursesort_name}}</span>
+                </li>
+              </ul>
+            </div>
+          </div>
+          <div class="grid-content bg-purple content-main">
+            <router-view></router-view>
+          </div>
         </div>
       </el-col>
       <el-col :span="2" class="header-title">
-        <div class="grid-content bg-purple">
-        </div>
       </el-col>
     </el-row>
   </div>
 </template>
 
 <script>
-  // 导入头部组件
-  // import MyHeader from '@/components/myheader.vue'
-
   export default {
-    // 注册局部组件
-    // components: {
-    //   MyHeader,
-    // },
     data() {
       return {
         userForm: {},
+        //活动信息
         activityForm: [],
         // 分页  当前页数
         current_page: 1,
@@ -154,31 +125,31 @@
         per_page: 1,
         //总页数
         total: 0,
+        //分类标记
         num: -1,
         num2: -1,
         num3: -1,
-        sortCon: false,
-        sortCon2: false,
+        //分类展开
+        sortSubject: false,
+        sortCourse: false,
+        //分类信息
         majorSortForm: [],
         subjectSortForm: [],
         courseSortForm: [],
-        defaultActive: '',
-        tabPosition: 'left',
-        iscollapse: false,
       }
     },
-    // // 判断是否登录
-    // beforeCreate() {
-    //   // 判断sessionStorage中是否有token，如果没有则认为没有登陆
-    //   const token = sessionStorage.getItem('token')
-    //   if (!token) {
-    //     // 跳转回登录页面并且要提示
-    //     this.$router.push({
-    //       name: 'login'
-    //     })
-    //     this.$message.info('请先登录')
-    //   }
-    // },
+    // 判断是否登录
+    beforeCreate() {
+      // 判断sessionStorage中是否有token，如果没有则认为没有登陆
+      const token = sessionStorage.getItem('token')
+      if (!token) {
+        // 跳转回登录页面并且要提示
+        this.$router.push({
+          name: 'userlogin'
+        })
+        this.$message.info('请先登录')
+      }
+    },
     mounted() {
       // 获取列表数据
       this.loadData()
@@ -188,7 +159,6 @@
         // 获取用户名称
         const userID = sessionStorage.getItem('data')
         const res = await this.$axios.post(`/usertitle?user_id=${userID}`)
-        // console.log(res)
         if (res.data.status === 200) {
           // 表格数据
           this.userForm = res.data.data
@@ -221,10 +191,10 @@
           this.$message.error('获取数据失败')
         }
       },
-      // 获取学科分类
-      async openCon(majorsort_id, index) {
+      // 获取学科分类，打开学科分类
+      async openSubjectSort(majorsort_id, index) {
         this.num = index
-        this.sortCon = true
+        this.sortSubject = true
         const res = await this.$axios.post(`/usersubjectsort?majorsort_id=${majorsort_id}`)
 
         if (res.data.status === 200) {
@@ -233,10 +203,15 @@
           this.$message.error('获取数据失败')
         }
       },
-      async openCon2(subjectsort_id, index2) {
+      openCourse() {
+        this.sortSubject = true
+        this.sortCourse = true
+      },
+      //获取课程分类，打开课程分类
+      async openCourseSort(subjectsort_id, index2) {
         this.num2 = index2
-        this.sortCon = true
-        this.sortCon2 = true
+        this.sortSubject = true
+        this.sortCourse = true
         const res2 = await this.$axios.post(`/usercoursesort?subjectsort_id=${subjectsort_id}`)
         if (res2.data.status === 200) {
           this.courseSortForm = res2.data.data.data
@@ -244,57 +219,56 @@
           this.$message.error('获取数据失败')
         }
       },
-      closeAll() {
-        // this.num = -1
-        this.num2 = -1
-        this.num3 = -1
-        this.sortCon = false
-        this.sortCon2 = false
-      },
-      closeCon() {
-        this.num3 = -1
-        this.sortCon = false
-        this.sortCon2 = false
-      },
+      //保持所有分类处于展开状态
       openAll(index3) {
         this.num3 = index3
-        this.sortCon = true
-        this.sortCon2 = true
+        this.sortSubject = true
+        this.sortCourse = true
       },
-      open2() {
-        this.sortCon = true
+      //关闭所有分类展开状态
+      closeAllSort() {
+        this.sortSubject = false
+        this.sortCourse = false
       },
-      open3() {
-        this.sortCon = true
-        this.sortCon2 = true
+      //关闭所有分类展开状态
+      closeSubjectSort() {
+        this.sortSubject = false
+        this.sortCourse = false
       },
-      closeCon2() {
-        // this.num = -1
-        this.num3 = -1
-        this.sortCon = false
-        this.sortCon2 = false
+      //关闭所有分类展开状态
+      closeCourseSort() {
+        this.sortSubject = false
+        this.sortCourse = false
       },
-      doMajorList(majorsort_id) {
+      //点击进入专业书籍分类列表页
+      doMajorList(majorsort_id, index) {
+        this.sortSubject = false
+        this.num = index
         this.$router.push({
-          name: 'booklist',
+          name: 'usermajorsortlist',
           params: {
-            id: majorsort_id,
+            majorsort_id: majorsort_id
           }
         })
       },
-      doSubjectList(majorsort_id,subjectsort_id) {
+      //点击进入学科书籍分类列表页
+      doSubjectList(subjectsort_id) {
+        this.sortSubject = false
         this.$router.push({
-          name: 'booklist',
+          name: 'usersubjectsortlist',
           params: {
-            id: subjectsort_id
+            subjectsort_id: subjectsort_id
           }
         })
       },
+      //点击进入课程书籍分类列表页
       doCourseList(coursesort_id) {
+        this.sortSubject = false
+        this.sortCourse = false
         this.$router.push({
-          name: 'booklist',
+          name: 'usercoursesortlist',
           params: {
-            id: coursesort_id
+            coursesort_id: coursesort_id
           }
         })
       },
@@ -304,25 +278,15 @@
         // 当每页条数发生变化，修改当前页码为第一页
         this.current_page = 1;
         this.loadData();
-        // size发生变化
-        console.log(`每页 ${val} 条`);
       },
       handleCurrentChange(val) {
         this.current_page = val;
         this.loadData();
-        // 页码发生变化
-        console.log(`当前页: ${val}`);
       },
       userCenter() {
         this.$router.push({
           name: 'myinfor'
         })
-      },
-      handleOpen(key, keyPath) {
-        console.log(key, keyPath);
-      },
-      handleClose(key, keyPath) {
-        console.log(key, keyPath);
       },
       logout() {
         this.$confirm('是否要退出系统？', '退出提示', {
@@ -335,7 +299,7 @@
           sessionStorage.removeItem('data')
           // 2. 跳转到登录
           this.$router.push({
-            name: 'userlogin'
+            name: 'userloginbooklist'
           })
           this.$message({
             type: 'success',
@@ -373,6 +337,15 @@
     cursor: pointer;
   }
 
+  .center {
+    float: left;
+    margin-right: 20px;
+  }
+
+  /* .logout {
+    clear: both;
+  } */
+
   .header-title3 {
     line-height: 35px;
     font-size: 14px;
@@ -382,24 +355,27 @@
   }
 
   .shoulder {
-    height: 220px;
-    background-color: lavender;
+    margin-top: 20px;
   }
 
   .shoulder-img img {
-    width: 100%;
+    width: 235px;
     height: 200px;
-    padding-top: 10px;
+    float: left;
+    margin-right: 15px;
   }
 
   .shoulder-activity {
+    height: 175px;
     font-size: 16px;
-    margin-left: 20px;
-    margin-top: 10px;
   }
 
-  .shoulder-activity-h {
-    font-size: 18px;
+  .shoulder-activity span {
+    font-weight: bold;
+  }
+
+  .shoulder-activity-header {
+    font-size: 22px;
     font-weight: bold;
     margin-bottom: 5px;
   }
@@ -409,7 +385,17 @@
   }
 
   .shoulder-activity-content {
+    /* height: 60px; */
     margin-bottom: 5px;
+  }
+
+  .shoulder-activity-content-title {
+    float: left;
+    font-weight: bold;
+  }
+
+  .shoulder-activity-content-content {
+    padding-left: 5px;
     overflow: hidden;
     text-overflow: ellipsis;
     display: -webkit-box;
@@ -426,98 +412,81 @@
     margin-bottom: 5px;
   }
 
-  .content {
-    height: 100%;
-  }
-
-  .sontent-sort {
+  .content-sort {
     width: 230px;
     float: left;
     z-index: 5;
     position: absolute;
-    left: 8%;
   }
 
   .content-sort-title {
     font-size: 22px;
     font-weight: bold;
-    padding-left: 10px;
+    margin-bottom: 10px;
   }
 
   .active {
-    color: #fff;
-    background: #e74c3c;
+    color: blue;
+    /* background-color: #e74c3c; */
   }
 
-  .content-sort-tab {
+  .content-majorsort {
     width: 100%;
     height: 0;
+
   }
 
-  .content-sort-tab>ul {
-    margin: 0;
-    padding: 0;
-  }
-
-  .content-sort-tab>ul>li {
+  .content-majorsort>ul>li {
     height: 45px;
     font-size: 18px;
-    list-style: none;
     line-height: 45px;
-    border: 1px solid #d8a59f;
+    border: 1px solid #000;
     cursor: pointer;
     text-indent: 1em;
+    background-color: #f1d9d9;
   }
 
-  .content-sort-content {
+  .content-subject {
     margin-left: 100%;
     width: 230px;
     height: 0;
   }
 
-  .content-sort-content>ul {
-    margin: 0;
-    padding: 0;
-    height: 300px;
+  .content-subject>ul {
+    height: 200px;
   }
 
-  .content-sort-content>ul>li {
-    width: 100%;
-    height: 50px;
+  .content-subject>ul>li {
+    height: 45px;
     font-size: 18px;
-    list-style: none;
-    line-height: 50px;
+    line-height: 45px;
     border: 1px solid blue;
     cursor: pointer;
     text-indent: 1em;
+    background-color: gold;
   }
 
-  .content-sort-content2 {
+  .content-course {
     margin-left: 200%;
     width: 230px;
   }
 
-  .content-sort-content2>ul {
-    margin: 0;
-    padding: 0;
-    height: 400px;
+  .content-course>ul {
+    height: 300px;
   }
 
-  .content-sort-content2>ul>li {
-    width: 100%;
-    height: 50px;
+  .content-course>ul>li {
+    height: 45px;
     font-size: 18px;
-    list-style: none;
     padding-left: 10px;
-    line-height: 50px;
+    line-height: 45px;
     border: 1px solid #d8a59f;
     cursor: pointer;
     text-indent: 1em;
+    background: mediumaquamarine;
   }
 
-
   .content-main {
-    width: 100%;
     margin-left: 250px;
     margin-top: 20px;
   }

@@ -1,6 +1,6 @@
 <template>
   <div>
-    <el-breadcrumb separator="/">
+    <el-breadcrumb separator="">
       <el-breadcrumb-item :to="{ path: '/mycomment'}">我的评论</el-breadcrumb-item>
       <el-breadcrumb-item></el-breadcrumb-item>
     </el-breadcrumb>
@@ -37,8 +37,6 @@
       </el-table>
     </div>
     <div style="margin-top: 10px;">
-      <!-- <el-pagination background layout="prev, pager, next" :total="1000">
-      </el-pagination> -->
       <el-pagination 
       @size-change="handleSizeChange" 
       @current-change="handleCurrentChange" 

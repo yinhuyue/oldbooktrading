@@ -1,6 +1,6 @@
 <template>
   <div>
-    <el-breadcrumb separator="/">
+    <el-breadcrumb separator="">
       <el-breadcrumb-item :to="{ path: '/mybooklist' }">待出售书籍管理</el-breadcrumb-item>
       <el-breadcrumb-item></el-breadcrumb-item>
     </el-breadcrumb>
@@ -12,31 +12,28 @@
     </div>
     <div style="margin-top: 10px;">
       <el-table ref="singleTable" :data="tableData.slice((current_page-1)*per_page,current_page*per_page)" style="width: 100%" border stripe>
-        <!-- <template slot-scope="scope"> -->
         <el-table-column type="index" width="50">
         </el-table-column>
-        <el-table-column  property="book_name" label="书名" width="100">
+        <el-table-column  property="book_name" label="书名" width="130">
         </el-table-column>
-        <el-table-column property="book_author" label="作者" width="100">
+        <el-table-column property="book_author" label="作者" width="120">
         </el-table-column>
-        <el-table-column property="book_publish" label="出版社" width="130">
+        <el-table-column property="book_publish" label="出版社" width="135">
         </el-table-column>
-        <el-table-column property="book_publishtime" label="出版时间" width="135">
+        <el-table-column property="book_oldprice" label="原价(元)" width="100">
         </el-table-column>
-        <el-table-column property="book_oldprice" label="原价(元)" width="80">
-        </el-table-column>
-        <el-table-column property="book_newprice" label="现价(元)" width="80">
+        <el-table-column property="book_newprice" label="现价(元)" width="100">
         </el-table-column>
         <el-table-column property="user_name" label="出售人" width="120">
         </el-table-column>
-        <el-table-column property="book_auditstate" label="审核状态" width="120">
+        <el-table-column property="book_auditstate" label="审核状态" width="130">
           <template slot-scope="scope">
             <el-tag type="warning" effect="dark" v-if="scope.row.book_auditstate==0">未审核</el-tag>
             <el-tag type="success" effect="dark" v-if="scope.row.book_auditstate==1">审核通过</el-tag>
             <el-tag type="danger" effect="dark" v-if="scope.row.book_auditstate==2">审核未通过</el-tag>
           </template>
         </el-table-column>
-        <el-table-column property="book_sellstate" label="书籍出售状态" width="120">
+        <el-table-column property="book_sellstate" label="书籍出售状态" width="130">
           <template slot-scope="scope">
             <el-tag type="success" effect="dark" v-if="scope.row.book_sellstate==0">未售出</el-tag>
             <el-tag type="error" effect="dark" v-if="scope.row.book_sellstate==1">已售出</el-tag>
@@ -48,7 +45,6 @@
             <el-button size="mini" type="danger" @click="bookDelete(scope.row.book_id)">删除</el-button>
           </template>
         </el-table-column>
-        <!-- </template> -->
       </el-table>
     </div>
     <div style="margin-top: 10px;">
@@ -88,7 +84,7 @@
       if (!token) {
         // 跳转回登录页面并且要提示
         this.$router.push({
-          name: 'login'
+          name: 'userlogin'
         })
         this.$message.info('请先登录')
       }

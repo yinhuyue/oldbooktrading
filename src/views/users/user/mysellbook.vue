@@ -3,48 +3,41 @@
     <el-breadcrumb separator="">
       <el-breadcrumb-item :to="{ path: '/mysellbook' }">出售书籍</el-breadcrumb-item>
       <el-breadcrumb-item></el-breadcrumb-item>
-    </el-breadcrumb> 
+    </el-breadcrumb>
     <div style="margin-top: 10px;">
       <el-form label-position="left" :model="bookForm" :rules="bookFormRules" ref="bookFormRef" label-width="110px"
         class="demo-ruleForm">
         <el-row>
-          <el-col :span="9">
+          <el-col :span="9" style="margin-left: 50px;">
             <el-form-item label="书籍名称" prop="book_name">
               <el-input v-model="bookForm.book_name" placeholder="请输入书籍名称"></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="9" style="margin-left: 50px;">
-            <el-form-item label="书籍原价" prop="book_oldprice">
-              <el-input v-model.number="bookForm.book_oldprice" placeholder="请输入书籍原价，单位为“元”"></el-input>
+            <el-form-item label="书籍作者" prop="book_author">
+              <el-input v-model="bookForm.book_author" placeholder="请输入书籍作者名称"></el-input>
             </el-form-item>
           </el-col>
-          <el-col :span="9">
+          <el-col :span="9" style="margin-left: 50px;">
             <el-form-item class="item-book-pic" label="书籍封面">
-              <el-upload
-                class="upload-demo"
-                action="http://127.0.0.1:8/oldbooktrading/public/index.php/uploadpic"
-                :on-preview="handlePreview"
-                :on-remove="handleRemove"
-                :on-success="handleSuccess"
-                :file-list="fileList"
-                list-type="picture">
+              <el-upload class="upload-demo" action="http://127.0.0.1:8/oldbooktrading/public/index.php/uploadpic"
+                :on-preview="handlePreview" :on-remove="handleRemove" :on-success="handleSuccess" :file-list="fileList"
+                :limit="1" list-type="picture">
                 <el-button size="small" type="primary">点击上传</el-button>
               </el-upload>
             </el-form-item>
           </el-col>
           <el-col :span="9" style="margin-left: 50px;">
-            <el-form-item label="书籍现价" prop="book_newprice">
-              <el-input v-model.number="bookForm.book_newprice" placeholder="请输入书籍现价，单位为“元”"></el-input>
+            <el-form-item label="书籍出版社" prop="book_publish">
+              <el-input v-model="bookForm.book_publish" placeholder="请输入书籍出版社名称"></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="9" style="margin-left: 50px;">
-            <el-form-item label="书籍页数" prop="book_pages">
-              <el-input v-model.number="bookForm.book_pages" placeholder="请输入书籍页数，单位为“张”"></el-input>
-            </el-form-item>
-          </el-col>
-          <el-col :span="9" style="margin-left: 50px;">
-            <el-form-item label="书籍重量" prop="book_weight">
-              <el-input v-model.number="bookForm.book_weight" placeholder="请输入书籍重量，单位为“克”"></el-input>
+            <el-form-item label="书籍出版时间" prop="book_publishtime">
+              <!-- <el-date-picker v-model="bookForm.book_publishtime" type="date" default-value format="yyyy-MM-dd" placeholder="选择书籍出版时间">
+              </el-date-picker> -->
+              <el-date-picker type="date" placeholder="选择书籍出版时间" value-format="yyyy-MM-dd"
+                v-model="bookForm.book_publishtime"></el-date-picker>
             </el-form-item>
           </el-col>
           <el-col :span="9" style="margin-left: 50px;">
@@ -58,9 +51,9 @@
               </el-select>
             </el-form-item>
           </el-col>
-          <el-col :span="9">
-            <el-form-item label="书籍作者" prop="book_author">
-              <el-input v-model="bookForm.book_author" placeholder="请输入书籍作者名称"></el-input>
+          <el-col :span="9" style="margin-left: 50px;">
+            <el-form-item label="书籍原价" prop="book_oldprice">
+              <el-input v-model.number="bookForm.book_oldprice" placeholder="请输入书籍原价，单位为“元”"></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="9" style="margin-left: 50px;">
@@ -75,9 +68,9 @@
               </el-select>
             </el-form-item>
           </el-col>
-          <el-col :span="9">
-            <el-form-item label="书籍出版社" prop="book_publish">
-              <el-input v-model="bookForm.book_publish" placeholder="请输入书籍出版社名称"></el-input>
+          <el-col :span="9" style="margin-left: 50px;">
+            <el-form-item label="书籍现价" prop="book_newprice">
+              <el-input v-model.number="bookForm.book_newprice" placeholder="请输入书籍现价，单位为“元”"></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="9" style="margin-left: 50px;">
@@ -91,42 +84,32 @@
               </el-select>
             </el-form-item>
           </el-col>
-          <el-col :span="9">
-            <el-form-item label="书籍出版时间" prop="book_publishtime">
-              <el-date-picker v-model="bookForm.book_publishtime" type="date" placeholder="选择书籍出版时间">
-              </el-date-picker>
+          <el-col :span="9" style="margin-left: 50px;">
+            <el-form-item label="书籍重量" prop="book_weight">
+              <el-input v-model.number="bookForm.book_weight" placeholder="请输入书籍重量，单位为“克”"></el-input>
             </el-form-item>
           </el-col>
-          <el-col :span="16">
+          <el-col :span="9" style="margin-left: 50px;">
+            <el-form-item label="书籍页数" prop="book_pages">
+              <el-input v-model.number="bookForm.book_pages" placeholder="请输入书籍页数，单位为“张”"></el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="16" style="margin-left: 50px;">
             <el-form-item label="书籍简介" prop="book_introduce">
               <el-input type="textarea" style="height: 100px;" v-model="bookForm.book_introduce" :rows="5"></el-input>
             </el-form-item>
           </el-col>
         </el-row>
-        <el-form-item style="margin-top: 15px;">
+        <el-form-item style="margin-top: 15px; margin-left: 50px;">
           <el-button type="primary" @click="sellbook">出售书籍</el-button>
-          <el-button>重置</el-button>
+          <el-button @click="reSet">重置</el-button>
         </el-form-item>
       </el-form>
-<!-- <el-upload
-  class="avatar-uploader"
-  action="upload"
-  :headers="{'Content-Type':'multipart/form-data'}"
-  :show-file-list="false"
-  :auto-upload = "true"
-  :http-request="uploadFile"
-  :on-success="handleSuccess"
-  :before-upload="beforeAvatarUpload">
-  <img v-if="imageUrl" :src="imageUrl" class="avatar">
-  <i v-else class="el-icon-plus avatar-uploader-icon"></i>
-</el-upload> -->
     </div>
   </div>
 </template>
 
 <script>
-import axios from 'axios'
-
   export default {
     data() {
       return {
@@ -165,7 +148,7 @@ import axios from 'axios'
             trigger: 'blur'
           }],
           book_publishtime: [{
-            type: 'date',
+            type: 'string',
             required: true,
             message: '请选择日期',
             trigger: 'change'
@@ -219,7 +202,6 @@ import axios from 'axios'
     beforeCreate() {
       // 判断sessionStorage中是否有token，如果没有则认为没有登陆
       const token = sessionStorage.getItem('token')
-      
       if (!token) {
         // 跳转回登录页面并且要提示
         this.$router.push({
@@ -275,13 +257,9 @@ import axios from 'axios'
           }
         })
       },
-      // 图片上传，产生图片存储的地址
-      async uploadPic(params) {
-        
-      },
       // 图片上传事件
       // 图片上传成功
-      handleSuccess(response, file ,fileList){
+      handleSuccess(response, file, fileList) {
         // console.log(response)
         // console.log(file)
         // console.log(fileList)
@@ -325,7 +303,9 @@ import axios from 'axios'
       //   console.log(err)
       //   this.$message.error('上传图片失败!');
       // },
-      
+      reSet() {
+        this.$refs.bookFormRef.resetFields();
+      }
 
     }
   }
@@ -334,7 +314,7 @@ import axios from 'axios'
 
 <style scoped>
   .item-book-pic {
-    height: 170px;
+    height: 120px;
   }
 
 </style>

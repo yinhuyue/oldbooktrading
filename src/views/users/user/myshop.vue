@@ -1,6 +1,6 @@
 <template>
   <div>
-    <el-breadcrumb separator="/">
+    <el-breadcrumb separator="">
       <el-breadcrumb-item :to="{ path: '/myshop'}">我的购物车</el-breadcrumb-item>
       <el-breadcrumb-item></el-breadcrumb-item>
     </el-breadcrumb>
@@ -106,11 +106,11 @@
           this.$message.error('获取数据失败')
         }
       },
-      doDetail(cell) {
+      doDetail(row) {
           this.$router.push({
-            name: 'mybookdetail',
+            name: 'myshopdetail',
             params: {
-              id: cell.book_id
+              id: row.book_id
             }
         })
       },

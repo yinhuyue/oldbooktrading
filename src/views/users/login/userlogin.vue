@@ -36,11 +36,13 @@
             {{item.activity_name}}
           </div>
           <div class="shoulder-activity-content">
-            <span>活动内容：</span>
-            {{item.activity_content}}
+            <div class="shoulder-activity-content-title">活动内容：</div>
+            <div class="shoulder-activity-content-content">
+              {{item.activity_content}}
+            </div>
           </div>
           <div class="shoulder-activity-time">
-            <span>活动发起时间：</span>
+            <span>活动时间：</span>
             {{item.activity_avtivitytime | fmtDate('YYYY-MM-DD') }}
           </div>
           <div class="shoulder-activity-effecttime">
@@ -81,7 +83,7 @@
               <ul>
                 <li @mouseover="openCourseSort(item2.subjectsort_id,index2)" :class="{active:num2==index2}"
                   v-for='(item2,index2) in subjectSortForm' :key="item2.subjectsort_id"
-                  @click="doSubjectList(item2.majorsort_id,item2.subjectsort_id)">
+                  @click="doSubjectList(item2.subjectsort_id)">
                   <span>{{item2.subjectsort_name}}</span>
                 </li>
               </ul>
@@ -329,7 +331,7 @@
               sessionStorage.setItem('data', JSON.stringify(user))
               // 跳转
               this.$router.push({
-                name: 'userindex'
+                name: 'userbooklist'
               })
             } else {
               this.$message.error(res.data.msg)
@@ -437,21 +439,22 @@
       },
       //点击进入专业书籍分类列表页
       doMajorList(majorsort_id, index) {
+        this.sortSubject = false
         this.num = index
         this.$router.push({
-          name: 'booklist',
+          name: 'userloginmajorsortlist',
           params: {
-            id: majorsort_id,
+            majorsort_id: majorsort_id
           }
         })
       },
       //点击进入学科书籍分类列表页
-      doSubjectList(majorsort_id, subjectsort_id) {
+      doSubjectList(subjectsort_id) {
         this.sortSubject = false
         this.$router.push({
-          name: 'booklist',
+          name: 'userloginsubjectsortlist',
           params: {
-            id: subjectsort_id
+            subjectsort_id: subjectsort_id
           }
         })
       },
@@ -460,9 +463,9 @@
         this.sortSubject = false
         this.sortCourse = false
         this.$router.push({
-          name: 'booklist',
+          name: 'userlogincoursesortlist',
           params: {
-            id: coursesort_id
+            coursesort_id: coursesort_id
           }
         })
       },
@@ -562,6 +565,15 @@
   .shoulder-activity-content {
     /* height: 60px; */
     margin-bottom: 5px;
+  }
+
+  .shoulder-activity-content-title {
+    float: left;
+    font-weight: bold;
+  }
+
+  .shoulder-activity-content-content {
+    padding-left: 5px;
     overflow: hidden;
     text-overflow: ellipsis;
     display: -webkit-box;
